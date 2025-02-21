@@ -35,8 +35,7 @@
     /* GIF 显示动画 */
     @keyframes fadeInThenDisappear {
       0% { opacity: 0; transform: scale(1); }
-      50% { opacity: 1; transform: scale(3); } /* 逐渐放大 */
-
+      50% { opacity: 1; transform: scale(2.7); } /* 逐渐放大 */
       100% { opacity: 0; transform: scale(5); } /* 突然消失 */
     }
 
@@ -44,6 +43,7 @@
       text-align: center;
       color: #d00;
     }
+
     a { 
       display: block; 
       text-align: center; 
@@ -53,18 +53,9 @@
       text-decoration: none; 
       width: fit-content; 
     }
+
     a:hover { text-decoration: underline; }
-    #play-button {
-      display: block;
-      margin: 20px auto;
-      padding: 10px 20px;
-      font-size: 18px;
-      background-color: #d00;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-    }
-   
+
     /* GIF 样式 */
     #horror-gif {
       width: 400px;
@@ -76,10 +67,8 @@
 <body>
 
   <div class="content">
+
     <h1>Chapter4: 血宴 —— 亡者呓语</h1>
-  
-    <!-- 点击链接后弹窗询问是否播放音乐 -->
-    <p><a href="#" id="music-link">点击此处体验完整恐怖效果</a></p>
 
     <p>黑暗吞噬了这座城市的角落，腐朽的公寓在夜色中伫立，如同一座坟墓。</p>
 
@@ -242,7 +231,6 @@
     <p>“血宴，未完待续。”</p>
 
     <a href="index.html">返回目录</a>
-
   </div>
 
   <!-- 背景音乐 -->
@@ -250,38 +238,55 @@
     <source src="https://jasonxwong.github.io/Alison-Tina-Story/horror-258261.mp3" type="audio/mpeg">
   </audio>
 
+  <!-- 弹窗 -->
+  <div class="modal" id="music-modal">
+    <div class="modal-content">
+      <p>是否开启恐怖音效？</p>
+      <button id="play-music">开启音效</button>
+      <button id="close-modal">关闭</button>
+    </div>
+  </div>
+
   <!-- 10秒后显示的弹窗 -->
   <div class="modal" id="scareModal">
-    <img id="horror-gif" src="https://jasonxwong.github.io/Alison-Tina-Story/output.gif" alt="GIF">
+    <img id="horror-gif" src="https://jasonxwong.github.io/Alison-Tina-Story/output.gif" alt="恐怖鬼臉">
   </div>
 
   <script>
     const audio = document.getElementById("bg-music");
-    const modal = document.getElementById("scareModal");
+    const musicModal = document.getElementById("music-modal");
+    const scareModal = document.getElementById("scareModal");
     const gif = document.getElementById("horror-gif");
-    const musicLink = document.getElementById("music-link");
+    const playMusicBtn = document.getElementById("play-music");
+    const closeModalBtn = document.getElementById("close-modal");
 
-    // 点击超链接，弹出确认框
-    musicLink.addEventListener("click", function (event) {
-      event.preventDefault(); // 防止默认跳转
-      const playMusic = confirm("是否开启恐怖音效？");
-      if (playMusic) {
-        audio.play().catch(error => console.error("音乐播放失败:", error));
-      }
+    // 自动显示确认弹窗
+    window.onload = function() {
+      musicModal.style.display = "flex"; // 显示音乐确认弹窗
+    };
+
+    // 开始播放音乐
+    playMusicBtn.addEventListener("click", function () {
+      audio.play().catch(error => console.error("音乐播放失败:", error));
+      musicModal.style.display = "none"; // 隐藏弹窗
+    });
+
+    // 关闭弹窗
+    closeModalBtn.addEventListener("click", function () {
+      musicModal.style.display = "none"; // 隐藏弹窗
     });
 
     // 30秒后显示GIF动画
     setTimeout(() => {
-      modal.style.display = "flex"; // 让弹窗可见
+      scareModal.style.display = "flex"; // 显示GIF弹窗
       gif.style.animation = "fadeInThenDisappear 3.8s forwards"; // 绑定动画
 
       // 动画结束后隐藏弹窗
       gif.addEventListener("animationend", () => {
-        modal.style.display = "none";
+        scareModal.style.display = "none";
       });
-    }, 32000);
+    }, 30000); // GIF显示时机调整为30秒
   </script>
-
 
 </body>
 </html>
