@@ -1,50 +1,94 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter4: 血宴</title>
-    <style>
-        body {
-            font-family: "Microsoft YaHei", Arial, sans-serif;
-            line-height: 1.8;
-            background-color: #0a0a0a;
-            color: #e6e6e6;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #d00;
-        }
-        p {
-            text-indent: 2em;
-        }
-        a { 
-            display: block; 
-            text-align: center; 
-            margin: 20px auto;  /* 让链接居中 */
-            font-size: 18px; 
-            color: #007BFF; 
-            text-decoration: none; 
-            width: fit-content;  /* 让 a 标签宽度适应内容 */
-        }
-        a:hover { text-decoration: underline; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter4: 血宴</title>
+  <style>
+    body {
+        font-family: "Microsoft YaHei", Arial, sans-serif;
+      background: #111;
+      color: #e6e6e6;
+      margin: 0;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    /* 弹窗容器样式 */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      display: none; /* 初始隐藏 */
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    /* GIF 显示动画 */
+    @keyframes fadeInThenDisappear {
+      0% { opacity: 0; transform: scale(1); }
+      50% { opacity: 1; transform: scale(3); } /* 逐渐放大 */
+
+      100% { opacity: 0; transform: scale(5); } /* 突然消失 */
+    }
+
+    h1 {
+      text-align: center;
+      color: #d00;
+    }
+    p {
+      text-indent: 2em;
+    }
+    a { 
+      display: block; 
+      text-align: center; 
+      margin: 20px auto; 
+      font-size: 18px; 
+      color: #007BFF; 
+      text-decoration: none; 
+      width: fit-content; 
+    }
+    a:hover { text-decoration: underline; }
+    #play-button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #d00;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+   
+    /* GIF 样式 */
+    #horror-gif {
+      width: 400px;
+      height: 400px;
+      opacity: 0;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- 添加本地音乐文件，确保 local-music.mp3 与此文件在同一目录下 -->
-    <audio id="bg-music">
-        <source src="https://jasonxwong.github.io/Alison-Tina-Story/horror-258261.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-    
+  <div class="content">
     <h1>Chapter4: 血宴 —— Alison、Edith、Tina 的最后一夜</h1>
+  
+    <!-- 点击链接后弹窗询问是否播放音乐 -->
+    <p><a href="#" id="music-link">点击此处体验完整恐怖效果</a></p>
 
     <p>黑暗吞噬了这座城市的角落，腐朽的公寓在夜色中伫立，如同一座坟墓。</p>
-    
+
     <p>Alison 深吸一口气，颤抖着手指摸索着旧门的把手。她的心跳如擂鼓，额头沁出细密的冷汗。她接到了 Edith 的短信：“Tina 在这里。”</p>
-    
+  
     <p>三年前的那个雨夜，Tina 失踪了。她最后见到的人，就是 Edith。</p>
     
     <p>门缓缓打开，一股腐臭夹杂着霉味的气息扑面而来，像是潮湿的肉正在腐烂。</p>
@@ -203,14 +247,45 @@
 
     <a href="index.html">返回目录</a>
 
-     <script>
-        // 页面加载时弹出确认提示
-        window.onload = function() {
-            var audio = document.getElementById("bg-music");
-            if (confirm("是否播放背景音乐？")) {
-                audio.play();
-            }
-        };
-    </script>
+  </div>
+
+  <!-- 背景音乐 -->
+  <audio id="bg-music" loop>
+    <source src="horror-258261.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- 10秒后显示的弹窗 -->
+  <div class="modal" id="scareModal">
+    <img id="horror-gif" src="output.gif" alt="恐怖鬼臉">
+  </div>
+
+  <script>
+    const audio = document.getElementById("bg-music");
+    const modal = document.getElementById("scareModal");
+    const gif = document.getElementById("horror-gif");
+    const musicLink = document.getElementById("music-link");
+
+    // 点击超链接，弹出确认框
+    musicLink.addEventListener("click", function (event) {
+      event.preventDefault(); // 防止默认跳转
+      const playMusic = confirm("是否开启恐怖音效？");
+      if (playMusic) {
+        audio.play().catch(error => console.error("音乐播放失败:", error));
+      }
+    });
+
+    // 30秒后显示GIF动画
+    setTimeout(() => {
+      modal.style.display = "flex"; // 让弹窗可见
+      gif.style.animation = "fadeInThenDisappear 3.8s forwards"; // 绑定动画
+
+      // 动画结束后隐藏弹窗
+      gif.addEventListener("animationend", () => {
+        modal.style.display = "none";
+      });
+    }, 30000);
+  </script>
+
+
 </body>
 </html>
